@@ -1,0 +1,40 @@
+xml.instruct!
+
+xml.rss "version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/" do
+ xml.channel do
+
+   xml.title       "Redmine Iterations"
+   xml.link        url_for :only_path => false, :controller => 'iterations', :action => 'list'
+   xml.description "Activity stream for redmine iterations"
+
+   @comments.each do |comment|
+     title = ""  
+
+     if comment.start? 
+       title = comment.author.name + ' started work on ' + comment.iteration.title
+     elsif comment.complete?
+       title = comment.author.name + ' completed ' + comment.iteration.title
+     elsif comment.reject?  
+       title = comment.author.name + ' rejected ' + comment.iteration.title
+     elsif comment.offer?  
+       title = comment.author.name + ' offered to work on ' + comment.iteration.title
+     elsif comment.support?  
+       title = comment.author.name + ' would like to see ' + comment.iteration.title
+     elsif !comment.comments.nil? && comment.comments != ""
+       title = comment.author.name + ' commented on ' + comment.iteration.title
+     end  
+
+     if title != ""
+       xml.item do
+  
+         	
+         xml.title title	
+         xml.description comment.comments.gsub("\n", "<br />")
+         xml.link        url_for(:only_path => false, :controller => 'iterations', :action => 'view', :id => comment.iteration.id) + '#comment-' + comment.id.to_s
+         xml.guid        url_for(:only_path => false, :controller => 'iterations', :action => 'view', :id => comment.iteration.id) + '#comment-' + comment.id.to_s
+       end
+     end 
+   end
+
+ end
+end

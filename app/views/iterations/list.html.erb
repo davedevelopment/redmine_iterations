@@ -1,0 +1,53 @@
+<% html_title "Iterations" -%>
+<% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'iterations', :plugin => 'redmine_iterations' %>
+<% end %>
+
+<h2 ><%= !@status.nil? ? h(@status.capitalize + ' ') : '' %>Iterations
+</h2>
+
+<div style="color:grey;float:left;">See all 
+<%= link_to :available, {:status => 'available'} %>,
+<%= link_to 'in progress', {:status => 'in progress'} %>,
+<%= link_to :rejected, {:status => 'rejected'} %> or 
+<%= link_to :completed, {:status => 'completed'} %>
+iterations.</div>
+
+<div style="float:right">
+<%= link_to :rss, {:action => :rss}, :class => :atom %>
+<button onclick="window.location = '<%= url_for :action => :suggest %>'">Suggest an iteration</button></div>
+
+<br style="clear:both" />
+
+<% @iterations.each do |iteration| %>
+  <hr />
+  <div class="iteration <%= iteration.status %>" >
+      <h3><%= link_to iteration[:title], {:action => :view, :id => iteration.id} %></h3>
+
+        <% if !iteration.volunteers.empty? %>
+        <div class="volunteer">
+            <div class="avatars">
+                <% iteration.volunteers.each do |v| %>
+                    <%= avatar(v, {:size => "32", :alt => v.name}) %>
+                <% end %>
+            </div>
+        </div>
+        <% end %>
+
+        <% if !iteration.supporters.empty? %>
+        <div class="supporter">
+            <div class="avatars">
+                <% iteration.supporters.each do |s| %>
+                    <%= avatar(s, {:size => "32", :alt => s.name}) %>
+                <% end %>
+            </div>
+        </div>
+        <% end %>
+
+        <div class="avatarText">
+            <p class="meta"><%= pluralize(iteration.non_empty_comments.length, 'comment') %></p>
+        </div>
+
+        <br style="clear:both" />
+    </div>
+<% end %>

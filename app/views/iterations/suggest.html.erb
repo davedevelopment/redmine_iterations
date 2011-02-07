@@ -1,0 +1,22 @@
+<% html_title "Iterations" -%>
+
+<% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'iterations', :plugin => 'redmine_iterations' %>
+<% end %>
+
+<h2>Suggest a new iteration</h2>
+
+<% form_for (@iteration, :url => {:action => :create}) do |f| %>
+<label for="title">Name the iteration</label><br />
+<input type="text" id="title" name="title" /><br />
+<label for="comments">Describe the idea</label><br />
+<textarea id="comments" name="comments" rows="30" cols="80" ></textarea>
+<br />
+
+<input type="checkbox" name="offer" id="offer" value="1" /><label for="offer">I want to work on this</label></br >
+
+<hr />
+
+<input type="submit" value="Add this iteration" /> or <%= link_to :Cancel, {:action => :list}, :id => :cancel %>.
+
+<% end %>

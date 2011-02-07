@@ -1,0 +1,93 @@
+div.avatars {
+    float:left;
+    margin:2px 5px 2px 0px;
+    padding:4px;
+    border-radius:3px;
+    moz-border-radius:3px;
+    background-color:#eceae6;
+}
+
+div.avatarText {
+    float:left;
+    margin-left:10px;
+}
+
+
+div.avatarText p.meta {
+    height:40px;
+    line-height:40px;
+    vertical-align:middle;
+    margin:0px;
+}
+
+div.avatarText.double {
+    line-height:20px;
+}
+
+div.avatars img {
+    margin:0px;
+    padding:0px;
+    float:left;
+}
+
+div.volunteer div.avatars {
+    background-color:#9ab0dc;
+}
+
+div.completed div.volunteer div.avatars{
+    background-color:#fe9e5e;
+}
+
+div.supporter div.avatars {
+    background-color:#b3d3a3;
+}
+
+div.comments {
+    margin-bottom:20px;
+}
+
+div.volunteer {
+    color:#9ab0dc;
+}
+
+div.completed div.volunteer {
+    color:#8ca9da; 
+}
+
+div.supporter {
+    color: #77a16f;
+}
+
+div.iteration {
+    margin:5px 0px 20px 0px;
+}
+
+div.commentForm {
+    background-color:#eceae6;
+    border-radius:3px;
+    moz-border-radius:3px;
+    padding:10px;
+}
+
+
+form#new_iteration input[type="text"], 
+form#new_iteration textarea,
+div.commentForm textarea,
+div.commentForm input[type="text"]
+{ padding: 2px; border: 1px solid #d7d7d7; width:700px; margin-bottom:10px}
+
+div.commentForm input[type="text"] { padding: 4px; }
+div.commentForm input#title { font-size: 200%; }
+
+div.titleEdit {
+    height:30px;
+    line-height:30px;
+}
+
+div.commentForm div.titleEdit input {
+    width: 662px;
+}
+
+#rename, #cancel {
+    color:red;
+}

@@ -1,0 +1,198 @@
+<% html_title "Iterations" -%>
+
+<% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'iterations', :plugin => 'redmine_iterations' %>
+<% end %>
+
+
+<% content_for :sidebar do %>
+    <div class="<%= @iteration.status %>">
+
+    <h3>This iteration is <span class="status"><%= @iteration.status.capitalize %></span></h3>
+
+    <% @iteration.stakeholders.each do |c| %>
+
+        <% if c.offer? %>
+            <div class="volunteer">
+                <div class="avatars">
+                    <%= avatar(c.author, :size => "32") %>
+                </div>
+                <div class="avatarText double">
+                    <%= link_to_user (c.author) %>
+                    <br />
+                    <span>
+                        <% if @iteration.status == 'completed' %>
+                            Worked on this
+                        <% elsif @iteration.status == 'in progress' %>
+                            Is working on this
+                        <% elsif @iteration.status == 'rejected' %>
+                            Would have worked on this
+                        <% else %>
+                            Would like to work on this
+                        <% end %>
+                    </span>
+                </div>
+            </div>
+        <% else %>
+            <div class="supporter">
+                <div class="avatars">
+                    <%= avatar(c.author, :size => "32") %>
+                </div>
+                <div class="avatarText double">
+                    <%= link_to_user (c.author) %>
+                    <br />
+                    <span>+1</span>
+                </div>
+            </div>
+        <% end %>
+        <br style="clear:both" />
+    <% end %>
+
+    </div>
+
+<% end %>
+
+<div class="<%= h @iteration.status %>">
+    <h2><%= h @iteration.title %></h2>
+    <p class="author">Suggested by 
+            <%= link_to_user (@iteration.author) %> <%= time_tag(@iteration.created_at) %> ago
+    </p>
+    <% @iteration.comments.each do |comment| %>
+
+      <% if !comment.comments.nil? && comment.comments != '' %>
+      <hr />
+      <a name="comment-<%= h comment.id %>">
+      <div class="comment commenter">
+            <div class="avatars">
+                <%= avatar(comment.author, :size =>"32") %>
+            </div>
+            <div class="avatarText">
+                <p class="meta"><%= link_to_user(comment.author) %> said on <%= comment.created_at.strftime("%d %B") %></p>
+                <div class="comments">
+                    <%= textilizable(comment.comments, {}) %>
+                </div>
+            </div>
+	 <br style="clear:both" />
+      </div>
+
+      <% end %>
+
+
+      <% if comment.offer? %>
+      <hr />
+      <div class="comment volunteer">
+            <div class="avatars">
+                <%= avatar(comment.author, :size =>"32") %>
+            </div>
+            <div class="avatarText">
+                <p class="meta"><%= link_to_user(comment.author) %> offered to work on this iteration on <%= comment.created_at.strftime("%d %B") %></p>
+            </div>
+        <br style="clear:both" />
+      </div>
+      <% elsif comment.support? && comment.author != @iteration.author %>
+      <hr />
+      <div class="comment supporter">
+            <div class="avatars">
+                <%= avatar(comment.author, :size =>"32") %>
+            </div>
+            <div class="avatarText">
+                <p class="meta"><%= link_to_user(comment.author) %> +1</p>
+            </div>
+        <br style="clear:both" />
+      </div>
+      <% end %>
+
+      <% if comment.complete? %>
+      <hr />
+      <div class="comment completer">
+            <div class="avatars">
+                <%= avatar(comment.author, :size =>"32") %>
+            </div>
+            <div class="avatarText">
+                <p class="meta"><%= link_to_user(comment.author) %> completed this iteration</p>
+            </div>
+        <br style="clear:both" />
+      </div>
+      <% end %>
+
+
+      <% if comment.start? %>
+      <hr />
+      <div class="comment starter">
+            <div class="avatars">
+                <%= avatar(comment.author, :size =>"32") %>
+            </div>
+            <div class="avatarText">
+                <p class="meta"><%= link_to_user(comment.author) %> started this iteration</p>
+            </div>
+        <br style="clear:both" />
+      </div>
+      <% end %>
+
+      <% if comment.reject? %>
+      <hr />
+      <div class="comment starter">
+            <div class="avatars">
+                <%= avatar(comment.author, :size =>"32") %>
+            </div>
+            <div class="avatarText">
+                <p class="meta"><%= link_to_user(comment.author) %> rejected this iteration</p>
+            </div>
+        <br style="clear:both" />
+      </div>
+      <% end %>
+
+    <% end %>
+    <hr />
+    <div class="comment">
+        <div class="avatars">
+            <%= avatar(@user, :size => "32") %>
+        </div>
+        <div class="avatarText">
+            <div class="commentForm">
+            <% form_for (@comment, :url => { :action => "comment" }) do |f| %>
+                <%= hidden_field_tag "id", @iteration.id %>
+
+                <% if @iteration.status == 'available' && !@iteration.volunteers.include?(@user) %>
+                    <% if !@iteration.supporters.include?(@user) %>
+                    <%= submit_tag "+1", :name => :support %>
+                    <% end %>
+                <%= submit_tag "I want to work on this", :name => :offer %>
+                <% end %>
+
+                <% if @iteration.status == 'available' %> 
+                    <% if @iteration.volunteers.include?(@user) %>
+                    <%= submit_tag "Start iteration", :name => :start %>
+                    <% end %>
+                    <%= submit_tag "Close and reject", :name => :reject %>
+                <% elsif @iteration.status == 'in progress' %>
+                    <%= submit_tag "Close as completed", :name => :complete %>
+                <% end %>
+
+                <div class="titleEdit">
+                Title: <span id="plainTextTitle"><%= h @iteration.title %></span> 
+                <input type="hidden" name="title" id="titleField" value="<%= h @iteration.title %>"/>
+                <a href="#" id="rename">Rename</a>
+                </div>
+                
+                <%= f.text_area :comments, :size => "80x20" %>
+                <br />
+
+                <%= submit_tag :save %>
+
+                <br style="clear:both" />
+            <% end %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$('rename').observe('click', function (e) {
+    Event.stop(e);
+    $('plainTextTitle').setStyle({'display':'none'});
+    $('titleField').type = 'text';
+    $('titleField').activate();
+    $('rename').setStyle({'display':'none'});
+});
+</script>
